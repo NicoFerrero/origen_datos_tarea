@@ -1,0 +1,81 @@
+Codigo usado solo para crear las hamburguesas y papas fritas
+
+app.post("/burgers", async (req, res) => {
+  const hamburguesas = [
+    {
+      nombre: "Hamburguesa de Pollo",
+      ingredientes: "Pechuga de pollo, Queso, Lechuga, Tomate, Mayonesa",
+      precio: 7.99,
+    },
+    {
+      nombre: "Hamburguesa de Res BBQ",
+      ingredientes:
+        "Carne de res, Queso, Cebolla caramelizada, Bacon, Salsa BBQ",
+      precio: 8.49,
+    },
+    {
+      nombre: "Hamburguesa Vegetariana",
+      ingredientes: "Hamburguesa de garbanzos, Lechuga, Tomate, Aguacate",
+      precio: 6.99,
+    },
+    {
+      nombre: "Hamburguesa Doble Queso",
+      ingredientes:
+        "Doble carne de res, Doble queso, Lechuga, Cebolla, Mayonesa",
+      precio: 9.99,
+    },
+  ];
+  try {
+    const promises = hamburguesas.map((h) => {
+      h.ingredientes = h.ingredientes
+        .split(",")
+        .map((ingrediente) => ingrediente.trim());
+      const hamburguesa = new Hamburguesa.Hamburguesa({
+        nombre: h.nombre,
+        precio: h.precio,
+        ingredientes: h.ingredientes,
+      });
+      return hamburguesa.save();
+    });
+    const result = await Promise.all(promises);
+
+    res.json({ createdBurgers: result });
+  } catch (error) {
+    res.status(500).json({ err: error });
+  }
+});
+
+app.post("/frech-fries", async (req, res) => {
+  const papasFritas = [
+    {
+      nombre: "Papas Fritas Chicas",
+      tamaño: "Chico",
+      precio: 2.99,
+    },
+    {
+      nombre: "Papas Fritas Medianas",
+      tamaño: "Mediano",
+      precio: 3.99,
+    },
+    {
+      nombre: "Papas Fritas Grandes",
+      tamaño: "Grande",
+      precio: 4.99,
+    },
+  ];
+  try {
+    const promises = papasFritas.map((pf) => {
+      const papaFrita = new PapasFritas.PapasFritas({
+        nombre: pf.nombre,
+        precio: pf.precio,
+        tamaño: pf.tamaño,
+      });
+      return papaFrita.save();
+    });
+    const result = await Promise.all(promises);
+
+    res.json({ createdPapasFritas: result });
+  } catch (error) {
+    res.status(500).json({ err: error });
+  }
+});
